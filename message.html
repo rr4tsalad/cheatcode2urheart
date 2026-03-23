@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave a Birthday Message</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    h2 {
+      color: #6a4343;
+      margin-bottom: 20px;
+    }
+
+    input, textarea, button {
+      width: 90%;
+      max-width: 400px;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: rgb(95, 188, 231);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #6a4343;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Gö(t)k için bi mesaj bırak :P</h2>
+
+  <form id="birthdayForm">
+    <input type="text" id="name" placeholder="ismin" required><br>
+    <textarea id="message" placeholder="mesajın" required></textarea><br>
+    <button type="submit">yollaaa</button>
+  </form>
+
+  <div id="status"></div>
+
+ <script>
+ const firebaseConfig = {
+  apiKey: "AIzaSyCJq10nbOq_tNT2-VRNdVhA9kEd3NLXZrQ",
+  authDomain: "gokbd-9d8af.firebaseapp.com",
+  databaseURL: "https://gokbd-9d8af-default-rtdb.firebaseio.com",
+  projectId: "gokbd-9d8af",
+  storageBucket: "gokbd-9d8af.firebasestorage.app",
+  messagingSenderId: "357023568004",
+  appId: "1:357023568004:web:d98f821eebbd5e18b2f2d1",
+  measurementId: "G-JNP4QH9FQD"
+};
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Create Firestore instance
+  const db = firebase.firestore();
+</script>
+
+<script>
+
+    // --- Ensure DOM loaded ---
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById('birthdayForm');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        if (!name || !message) return; // prevent empty messages
+
+        try {
+          await db.collection("birthdayMessages").add({
+            name: name,
+            message: message,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+
+          document.getElementById('status').textContent = "Message submitted! 🎉";
+          form.reset();
+        } catch (err) {
+          console.error(err);
+          document.getElementById('status').textContent = "Error submitting message.";
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
